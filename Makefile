@@ -17,3 +17,10 @@ CRYPTLIB = /usr/local/lib/libcl.a
 pemtrans: pemtrans.c
 	cc $(INCLUDES) $(LIBS) -o pemtrans pemtrans.c $(CRYPTLIB) \
 	-lcrypto -lssl $(EXTRA_LIBS)
+
+p15dump: p15dump.c
+	cc $(INCLUDES) $(LIBS) -o p15dump p15dump.c $(CRYPTLIB) \
+	$(EXTRA_LIBS)
+
+apcheader: apcheader.c
+	cc -o apcheader apcheader.c
