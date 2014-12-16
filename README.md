@@ -22,4 +22,4 @@ pemtrans is essentially exactly what we need but the result doesn't work yet wit
 * Remove APC header from server certificate
  * `dd if=server-apc.p15 of=server.p15 bs=228 skip=1`
 * Add APC header to a standard p15 file containing a 1024 bit key
- * `apcheader server-apc.p15 test.p15 1`
+ * `apcheader server.p15 server-apc.p15 1`
