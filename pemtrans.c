@@ -129,35 +129,39 @@ int main( int argc, char *argv[] )
 
     cryptInit();
 
+    const BIGNUM *keyn, *keye, *keyd, *keyp, *keyq, *keydmp1, *keydmq1, *keyiqmp;
+    RSA_get0_key(key, &keyn, &keye, &keyd);
+    RSA_get0_factors(key, &keyp, &keyq);
+    RSA_get0_crt_params(key, &keydmp1, &keydmq1, &keyiqmp);
     cryptInitComponents( &rsa, CRYPT_KEYTYPE_PRIVATE );
-    if ( ( buf[0] = malloc( BN_num_bytes( key->n ) ) ) != NULL &&
-         ( buf[1] = malloc( BN_num_bytes( key->e ) ) ) != NULL &&
-         ( buf[2] = malloc( BN_num_bytes( key->d ) ) ) != NULL &&
-         ( buf[3] = malloc( BN_num_bytes( key->p ) ) ) != NULL &&
-         ( buf[4] = malloc( BN_num_bytes( key->q ) ) ) != NULL &&
-         ( buf[5] = malloc( BN_num_bytes( key->iqmp ) ) ) != NULL &&
-         ( buf[6] = malloc( BN_num_bytes( key->dmp1 ) ) ) != NULL &&
-         ( buf[7] = malloc( BN_num_bytes( key->dmq1 ) ) ) != NULL )
+    if ( ( buf[0] = malloc( BN_num_bytes( keyn ) ) ) != NULL &&
+         ( buf[1] = malloc( BN_num_bytes( keye ) ) ) != NULL &&
+         ( buf[2] = malloc( BN_num_bytes( keyd ) ) ) != NULL &&
+         ( buf[3] = malloc( BN_num_bytes( keyp ) ) ) != NULL &&
+         ( buf[4] = malloc( BN_num_bytes( keyq ) ) ) != NULL &&
+         ( buf[5] = malloc( BN_num_bytes( keyiqmp ) ) ) != NULL &&
+         ( buf[6] = malloc( BN_num_bytes( keydmp1 ) ) ) != NULL &&
+         ( buf[7] = malloc( BN_num_bytes( keydmq1 ) ) ) != NULL )
     {
         int i;
 
-        BN_bn2bin( key->n, buf[0] );
-        BN_bn2bin( key->e, buf[1] );
-        BN_bn2bin( key->d, buf[2] );
-        BN_bn2bin( key->p, buf[3] );
-        BN_bn2bin( key->q, buf[4] );
-        BN_bn2bin( key->iqmp, buf[5] );
-        BN_bn2bin( key->dmp1, buf[6] );
-        BN_bn2bin( key->dmq1, buf[7] );
+        BN_bn2bin( keyn, buf[0] );
+        BN_bn2bin( keye, buf[1] );
+        BN_bn2bin( keyd, buf[2] );
+        BN_bn2bin( keyp, buf[3] );
+        BN_bn2bin( keyq, buf[4] );
+        BN_bn2bin( keyiqmp, buf[5] );
+        BN_bn2bin( keydmp1, buf[6] );
+        BN_bn2bin( keydmq1, buf[7] );
 
-        cryptSetComponent( (&rsa)->n, buf[0], BN_num_bits( key->n ) );
-        cryptSetComponent( (&rsa)->e, buf[1], BN_num_bits( key->e ) );
-        cryptSetComponent( (&rsa)->d, buf[2], BN_num_bits( key->d ) );
-        cryptSetComponent( (&rsa)->p, buf[3], BN_num_bits( key->p ) );
-        cryptSetComponent( (&rsa)->q, buf[4], BN_num_bits( key->q ) );
-        cryptSetComponent( (&rsa)->u, buf[5], BN_num_bits( key->iqmp ) );
-        cryptSetComponent( (&rsa)->e1, buf[6], BN_num_bits( key->dmp1 ) );
-        cryptSetComponent( (&rsa)->e2, buf[7], BN_num_bits( key->dmq1 ) );
+        cryptSetComponent( (&rsa)->n, buf[0], BN_num_bits( keyn ) );
+        cryptSetComponent( (&rsa)->e, buf[1], BN_num_bits( keye ) );
+        cryptSetComponent( (&rsa)->d, buf[2], BN_num_bits( keyd ) );
+        cryptSetComponent( (&rsa)->p, buf[3], BN_num_bits( keyp ) );
+        cryptSetComponent( (&rsa)->q, buf[4], BN_num_bits( keyq ) );
+        cryptSetComponent( (&rsa)->u, buf[5], BN_num_bits( keyiqmp ) );
+        cryptSetComponent( (&rsa)->e1, buf[6], BN_num_bits( keydmp1 ) );
+        cryptSetComponent( (&rsa)->e2, buf[7], BN_num_bits( keydmq1 ) );
 
         i = 0;
         while ( i < 8 )
