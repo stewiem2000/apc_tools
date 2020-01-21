@@ -76,7 +76,7 @@ int16_t calc_cksum(int16_t start, uint8_t *buf, size_t length)
 int main(int argc, char *argv[])
 {
   FILE *f;
-  char *buf;
+  unsigned char *buf;
   char *inFile;
   char *outFile;
   int keySize;

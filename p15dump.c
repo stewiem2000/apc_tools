@@ -27,14 +27,15 @@ void check( int n, CRYPT_HANDLE c, char *s )
     if ( n == CRYPT_OK )
         return;
 
-    cryptGetAttribute( c, CRYPT_ATTRIBUTE_ERRORLOCUS, &locus );
-    cryptGetAttribute( c, CRYPT_ATTRIBUTE_ERRORTYPE, &type );
-
     fprintf( stderr, "%s failed.\n", s );
     fprintf( stderr, "\tError code: %d\n", n );
-    if ( locus != 0 )
+
+    status = cryptGetAttribute( c, CRYPT_ATTRIBUTE_ERRORLOCUS, &locus );
+    if ( cryptStatusOK( status ) && locus != 0 )
         fprintf( stderr, "\tError locus: %d\n", locus );
-    if ( type != 0 )
+
+    status = cryptGetAttribute( c, CRYPT_ATTRIBUTE_ERRORTYPE, &type );
+    if ( cryptStatusOK( status ) && type != 0 )
         fprintf( stderr, "\tError type: %d\n", type );
 
     status = cryptGetAttributeString( c, CRYPT_ATTRIBUTE_ERRORMESSAGE,
@@ -89,7 +90,10 @@ int main( int argc, char *argv[] )
     label = argv[2];
     secret = argv[3];
 
-    cryptInit();
+    if ( cryptInit() != CRYPT_OK ) {
+        fprintf( stderr, "Couldn't initialize cryptLib\n" );
+        exit( -1 );
+    }
 
     /* Read the key from the keyset using the password */
     n = cryptKeysetOpen( &keyset, CRYPT_UNUSED, CRYPT_KEYSET_FILE, p15File, CRYPT_KEYOPT_NONE );

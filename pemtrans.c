@@ -32,14 +32,15 @@ void check( int n, CRYPT_HANDLE c, char *s )
     if ( n == CRYPT_OK )
         return;
 
-    cryptGetAttribute( c, CRYPT_ATTRIBUTE_ERRORLOCUS, &locus );
-    cryptGetAttribute( c, CRYPT_ATTRIBUTE_ERRORTYPE, &type );
-
     fprintf( stderr, "%s failed.\n", s );
     fprintf( stderr, "\tError code: %d\n", n );
-    if ( locus != 0 )
+
+    status = cryptGetAttribute( c, CRYPT_ATTRIBUTE_ERRORLOCUS, &locus );
+    if ( cryptStatusOK( status ) && locus != 0)
         fprintf( stderr, "\tError locus: %d\n", locus );
-    if ( type != 0 )
+
+    status = cryptGetAttribute( c, CRYPT_ATTRIBUTE_ERRORTYPE, &type );
+    if ( cryptStatusOK( status ) && type != 0)
         fprintf( stderr, "\tError type: %d\n", type );
 
     status = cryptGetAttributeString( c, CRYPT_ATTRIBUTE_ERRORMESSAGE,
@@ -62,7 +63,7 @@ int main( int argc, char *argv[] )
 {
     int n;
     FILE *f;
-    char *buf[8];
+    unsigned char *buf[8];
     char *outFile;
     char *keyFile;
     char *certFile;
@@ -127,7 +128,10 @@ int main( int argc, char *argv[] )
         fclose( f );
     }
 
-    cryptInit();
+    if ( cryptInit() != CRYPT_OK ) {
+        fprintf( stderr, "Couldn't initialize cryptLib\n" );
+        exit( -1 );
+    }
 
     const BIGNUM *keyn, *keye, *keyd, *keyp, *keyq, *keydmp1, *keydmq1, *keyiqmp;
     RSA_get0_key(key, &keyn, &keye, &keyd);
